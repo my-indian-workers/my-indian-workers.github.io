@@ -118,8 +118,16 @@
 
 
 <script>
-    // आपकी API Key यहाँ पहले से ही है
-    const BOT_API_KEY = "AIzaSyA_0TjJpODhRcWRBkGhYVmAOYuXbWy0X70"; 
+    // आपकी नई API Key और लेटेस्ट मॉडल
+    const BOT_API_KEY = "AIzaSyAp9jJhU9tC2_Uo7ujEMXZJ7RAjfHoACeE"; 
+    const MODEL_NAME = "gemini-3-flash-preview";
+
+    // आपके वर्कर्स की जानकारी - इसे आप कभी भी बदल सकते हैं
+    const WORKER_DATA = `
+        1. प्लंबर: राहुल और विकास
+        2. इलेक्ट्रिशियन: सोनू और मोनू
+        3. मिस्त्री: राजमिस्त्री प्रकाश
+    `;
 
     async function handleBotSend(manualText) {
         const input = document.getElementById('bot-user-input');
@@ -129,21 +137,25 @@
 
         if (!text) return;
 
+        // यूजर का मैसेज स्क्रीन पर दिखाना
         messages.innerHTML += `<div style="background: #e3f2fd; padding: 10px 14px; border-radius: 15px 15px 0px 15px; align-self: flex-end; max-width: 85%; word-wrap: break-word; margin-bottom: 5px;"><b>आप:</b> ${text}</div>`;
         input.value = '';
-        status.innerText = "मैनेजर जवाब दे रहा है...";
+        status.innerText = "मैनेजर टाइप कर रहा है...";
         messages.scrollTop = messages.scrollHeight;
 
         try {
-            // हमने यहाँ Proxy का इस्तेमाल किया है जो हर मोबाइल ब्राउज़र पर चलेगा
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${BOT_API_KEY}`;
-            const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(apiUrl);
+            // नया API URL
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${BOT_API_KEY}`;
 
-            const response = await fetch(proxyUrl, {
+            const response = await fetch(apiUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: `तुम "My Indian Workers" के मैनेजर हो। हिंदी में छोटा और विनम्र जवाब दो: ${text}` }] }]
+                    contents: [{
+                        parts: [{ 
+                            text: `तुम "My Indian Workers" के मैनेजर हो। हमारे वर्कर्स की लिस्ट ये है: ${WORKER_DATA}। अगर कोई मालिक वर्कर का नाम पूछे तो इसी लिस्ट में से बताओ। जवाब हिंदी में छोटा और विनम्र दो। ग्राहक का सवाल: ${text}` 
+                        }]
+                    }]
                 })
             });
 
@@ -153,11 +165,11 @@
                 let reply = data.candidates[0].content.parts[0].text;
                 messages.innerHTML += `<div style="background: white; padding: 10px 14px; border-radius: 15px 15px 15px 0px; border: 1px solid #eee; color: #1a73e8; max-width: 85%; word-wrap: break-word; margin-bottom: 5px;"><b>बॉट:</b> ${reply}</div>`;
             } else {
-                throw new Error("No response from AI");
+                throw new Error("No Response");
             }
         } catch (e) {
             console.error(e);
-            messages.innerHTML += `<div style="background: #ffebee; padding: 10px 14px; border-radius: 10px; color: #c62828; font-size: 12px;">क्षमा करें, रिस्पांस नहीं मिला। 10 मिनट बाद फिर कोशिश करें या नई API Key बनाएं।</div>`;
+            messages.innerHTML += `<div style="background: #ffebee; padding: 10px 14px; border-radius: 10px; color: #c62828; font-size: 12px;">क्षमा करें, अभी मैं जवाब नहीं दे पा रहा हूँ। कृपया 5 मिनट बाद प्रयास करें।</div>`;
         }
         
         status.innerText = "";
@@ -167,6 +179,7 @@
     function toggleChat() {
         const box = document.getElementById('gemini-chat-box');
         box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'flex' : 'none';
+        if(box.style.display === 'flex') document.getElementById('bot-user-input').focus();
     }
 </script>
 
