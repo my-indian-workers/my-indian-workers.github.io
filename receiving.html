@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Indian Workers - Receiving Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .form-container { max-width: 450px; margin: auto; background: white; padding: 25px; border-radius: 15px; border: 2px solid #ff9900; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { color: #ff9900; text-align: center; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        .warning { color: red; font-size: 13px; font-weight: bold; margin-top: 15px; text-align: center; }
+        #subBtn { width: 100%; background-color: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        #subBtn:disabled { background-color: #ccc; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>रिसीविंग फॉर्म</h2>
+    <form id="receivingForm">
+        <label>आपका नाम (वर्कर):</label>
+        <input type="text" id="wName" placeholder="अपना नाम लिखें" required>
+        
+        <label>मालिक का नाम (Customer):</label>
+        <input type="text" id="cName" placeholder="मालिक का नाम लिखें" required>
+        
+        <label>कुल राशि (Amount):</label>
+        <input type="number" id="totalAmt" placeholder="₹ कुल प्राप्त राशि" required>
+
+        <p class="warning">⚠️ मालिक से सीधे नकद (Cash) लेना मना है।</p>
+
+        <button type="submit" id="subBtn">सबमिट करें (Submit)</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('receivingForm').onsubmit = function(e) {
+        e.preventDefault(); // पेज को रीलोड होने से रोकने के लिए
+        
+        var btn = document.getElementById('subBtn');
+        btn.innerText = "भेजा जा रहा है...";
+        btn.disabled = true;
+
+        // --- यहाँ है वह कोड जो आपने पूछा था ---
+        var data = {
+            workerName: document.getElementById('wName').value,   // कॉलम B
+            customerName: document.getElementById('cName').value, // कॉलम C
+            amount: document.getElementById('totalAmt').value     // कॉलम D
+        };
+
+        // 'YOUR_WEB_APP_URL' की जगह अपना Apps Script वाला URL डालें
+        var script_url = "https://script.google.com/macros/s/AKfycbwpS2i2bOvY-ZZBWHZgFM9lKDxeFq3sz7lAi7i9z7rBpIOs8MwG6ufba-5boRt4fHQ3/exec";
+
+        fetch(script_url, {
+            method: 'POST',
+            mode: 'no-cors', // सुरक्षा के लिए
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(res => {
+            alert('धन्यवाद! आपकी रिसीविंग शीट में सफलतापूर्वक दर्ज हो गई है।');
+            document.getElementById('receivingForm').reset();
+            window.location.href = 'index.html'; // वापस मुख्य पेज पर जाने के लिए
+        })
+        .catch(err => {
+            alert('एरर: डेटा नहीं भेजा जा सका। कृपया दोबारा कोशिश करें।');
+            btn.innerText = "सबमिट करें (Submit)";
+            btn.disabled = false;
+        });
+    };
+</script>
+
+</body>
+</html>
