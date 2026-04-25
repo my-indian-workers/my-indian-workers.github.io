@@ -145,9 +145,20 @@ async function processPayment() {
 
 // UPI ऐप खोलने के लिए कॉमन फंक्शन
 function launchUPI(pa, pn, am) {
-    const url = `upi://pay?pa=${pa}&pn=${encodeURIComponent(pn)}&am=${am}&cu=INR`;
+    // pa को चेक करें, अगर सिर्फ नंबर है तो @ybl जोड़ें
+    let finalPa = pa;
+    if(!pa.includes('@')) {
+        finalPa = pa + "@ybl"; 
+    }
+
+    // tn = Transaction Note (इससे बैंक को भरोसा होता है)
+    // tr = Transaction Reference ID (एक रैंडम नंबर)
+    const tid = "TID" + Math.floor(Math.random() * 1000000);
+    const url = `upi://pay?pa=${finalPa}&pn=${encodeURIComponent(pn)}&am=${am}&cu=INR&tn=Worker_Payment&tr=${tid}`;
+    
     window.location.href = url;
 }
+
 </script>
 
 </body>
