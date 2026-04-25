@@ -168,6 +168,22 @@ placeholder="अपना शहर लिखें (जैसे: ब्लॉ�
     </select>
 </div>
 
+
+
+<div class="form-group" style="margin-top: 15px;">
+    <label for="paymentDetails" style="display: block; margin-bottom: 8px; font-weight: bold;">
+        पेमेंट की जानकारी (UPI ID / खाता नंबर / मोबाइल नंबर):
+    </label>
+    <input type="text" name="regPayment" id="regPayment" placeholder="यहाँ अपनी UPI ID, बैंक खाता या मोबाइल नंबर लिखें" required ...>
+
+         
+</div>
+
+
+
+
+
+
      <input type="hidden" name="userType" value="worker">
 
     <button type="submit" class="submit-btn">सबमिट करें</button>
@@ -201,7 +217,7 @@ placeholder="अपना शहर लिखें (जैसे: ब्लॉ�
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7i54hKon1Dizk_ZgP6tpjNolJINeYLxPD4UdncQwMZUpUHgO4GI-NhzSC5o8IpaeZ/exec"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynQZDzj81nXNUeu4rmiNayiwe_lqooOquFHc2L90ngrTkNKKmPUcKGiLrvZQY4UrE/exec"; 
     const form = document.getElementById('workerForm');
     const modal = document.getElementById('workerModal');
     const confirmBtn = document.getElementById('confirmSubmit');

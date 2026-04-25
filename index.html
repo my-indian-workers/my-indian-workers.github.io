@@ -385,6 +385,44 @@ function toggleLanguage() {
 
 
 
+<a href="help-form.html" class="help-float-btn">
+    <span>🆘 Help & Support</span>
+</a>
+
+<style>
+    .help-float-btn {
+        position: fixed;
+        bottom: 20px; /* नीचे से दूरी */
+        right: 20px;  /* दाहिने से दूरी */
+        background-color: #e74c3c;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        transition: 0.3s;
+        font-family: sans-serif;
+    }
+
+    .help-float-btn:hover {
+        background-color: #c0392b;
+        transform: scale(1.05);
+    }
+
+    /* मोबाइल के लिए छोटा बटन */
+    @media screen and (max-width: 600px) {
+        .help-float-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            bottom: 10px;
+            right: 10px;
+        }
+    }
+</style>
 
 
 

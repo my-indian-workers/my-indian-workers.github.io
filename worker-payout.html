@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>वर्कर पेमेंट - My Indian Workers</title>
+    <style>
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; padding: 10px; display: flex; justify-content: center; }
+        .form-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; border-top: 5px solid #27ae60; }
+        h2 { color: #27ae60; margin-bottom: 15px; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        .submit-btn { width: 100%; background-color: #27ae60; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .submit-btn:hover { background-color: #219150; }
+        .warning-box { background: #fff3cd; color: #856404; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ffeeba; font-size: 14px; text-align: left; }
+        .method-box { padding: 15px; border-radius: 8px; margin-bottom: 10px; text-align: left; border: 1px solid #eee; }
+        .bg-green { background: #eafaf1; }
+        .bg-gray { background: #f4f7f6; }
+        label { font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="form-card">
+    <h2>वर्कर पेमेंट (Payout)</h2>
+    <div class="warning-box"><strong>💰 ध्यान दें:</strong> पेमेंट करने के लिए मोबाइल में PhonePe या GPay होना जरूरी है।</div>
+
+    <form id="payoutForm">
+        <input type="text" id="workerName" placeholder="वर्कर का नाम" required>
+        <input type="number" id="payoutAmount" placeholder="पेमेंट राशि (Amount) ₹" required>
+
+        <hr style="margin: 20px 0; border-top: 1px dashed #ccc;">
+        <p style="font-weight: bold; color: #2c3e50; text-align: left;">पेमेंट का तरीका चुनें:</p>
+
+        <div class="method-box bg-green">
+            <label><input type="radio" name="payMethod" onclick="toggleFields('upiDiv')" checked> 1. UPI ID द्वारा</label>
+            <div id="upiDiv">
+                <input type="text" id="workerUPI" placeholder="UPI ID (जैसे: 9876543210@ybl)">
+            </div>
+        </div>
+
+        <div class="method-box bg-gray">
+            <label><input type="radio" name="payMethod" onclick="toggleFields('bankDiv')"> 2. बैंक अकाउंट द्वारा</label>
+            <div id="bankDiv" style="display:none;">
+                <input type="text" id="bankAcc" placeholder="अकाउंट नंबर">
+                <input type="text" id="bankIFSC" placeholder="IFSC कोड">
+            </div>
+        </div>
+
+        <div class="method-box bg-green">
+            <label><input type="radio" name="payMethod" onclick="toggleFields('phoneDiv')"> 3. मोबाइल नंबर (GPay/PhonePe)</label>
+            <div id="phoneDiv" style="display:none;">
+                <input type="tel" id="workerPhone" placeholder="10 अंकों का मोबाइल नंबर" maxlength="10">
+            </div>
+        </div>
+
+        <div class="method-box bg-gray">
+            <label><input type="radio" name="payMethod" onclick="toggleFields('qrDiv')"> 4. बारकोड / QR Code द्वारा</label>
+            <div id="qrDiv" style="display:none;">
+                <input type="file" id="qrCodeFile" accept="image/*">
+                <p style="font-size: 12px; color: red;">* बारकोड अपलोड करके सबमिट करें।</p>
+            </div>
+        </div>
+        
+        <button type="button" onclick="makePayment()" id="payBtn" class="submit-btn">💸 पेमेंट शुरू करें</button>
+    </form>
+</div>
+
+<script>
+function toggleFields(divId) {
+    const ids = ['upiDiv', 'bankDiv', 'phoneDiv', 'qrDiv'];
+    ids.forEach(id => document.getElementById(id).style.display = 'none');
+    document.getElementById(divId).style.display = 'block';
+}
+
+function makePayment() {
+    const name = document.getElementById('workerName').value;
+    const amount = document.getElementById('payoutAmount').value;
+    
+    if(!name || !amount) {
+        alert("नाम और राशि भरें!");
+        return;
+    }
+
+    // 1. अगर UPI ID चुना है
+    if (document.getElementById('upiDiv').style.display !== 'none') {
+        const upi = document.getElementById('workerUPI').value;
+        if(!upi) { alert("UPI ID भरें!"); return; }
+        window.location.href = `upi://pay?pa=${upi}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+    } 
+    
+    // 2. अगर मोबाइल नंबर चुना है
+    else if (document.getElementById('phoneDiv').style.display !== 'none') {
+        const phone = document.getElementById('workerPhone').value;
+        if(phone.length < 10) { alert("सही मोबाइल नंबर भरें!"); return; }
+        // मोबाइल नंबर को UPI लिंक में बदलने के लिए @apl या @ybl इस्तेमाल होता है
+        window.location.href = `upi://pay?pa=${phone}@apl&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+    }
+
+    // 3. अगर बैंक या बारकोड चुना है (इनमें सीधे ऐप नहीं खुलता)
+    else if (document.getElementById('bankDiv').style.display !== 'none') {
+        alert("बैंक पेमेंट के लिए जानकारी कॉपी करें और अपने बैंक ऐप (SBI/GPay) में जाकर 'Bank Transfer' करें।");
+    }
+    
+    else if (document.getElementById('qrDiv').style.display !== 'none') {
+        const file = document.getElementById('qrCodeFile').files[0];
+        if(!file) { alert("कृपया बारकोड फोटो चुनें!"); return; }
+        alert("बारकोड अपलोड हो गया है। अब इसे अपनी गैलरी से खोलकर किसी भी ऐप से स्कैन करें।");
+    }
+}
+</script>
+</body>
+</html>

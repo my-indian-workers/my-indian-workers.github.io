@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>मदद और सहायता - MIW</title>
+    <style>
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; padding: 15px; display: flex; justify-content: center; }
+        .help-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; border-top: 5px solid #e74c3c; }
+        h2 { color: #e74c3c; text-align: center; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        textarea { height: 100px; resize: none; }
+        .submit-btn { width: 100%; background: #e74c3c; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .submit-btn:hover { background: #c0392b; }
+        .info-text { font-size: 12px; color: #666; text-align: center; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="help-card">
+    <h2>🆘 मदद और सहायता</h2>
+    <form id="helpForm">
+        <div class="form-group">
+            <label>आप कौन हैं?</label>
+            <select name="regRole" required> <option value="">-- चुनें --</option>
+                <option value="Worker">मैं वर्कर हूँ (Worker)</option>
+                <option value="Owner">मैं मालिक हूँ (Owner)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>आपका नाम</label>
+            <input type="text" name="regName" placeholder="अपना नाम लिखें" required> </div>
+
+        <div class="form-group">
+            <label>मोबाइल नंबर</label>
+            <input type="tel" name="regMobile" placeholder="10 अंकों का नंबर" maxlength="10" required> </div>
+
+        <div class="form-group">
+            <label>विषय (Subject)</label>
+            <select name="regSubject" required> <option value="Payment Issue">पेमेंट के बारे में (Payment)</option>
+                <option value="Work Issue">काम में दिक्कत (Work Related)</option>
+                <option value="App Issue">ऐप/आईडी में दिक्कत</option>
+                <option value="Other">अन्य (Something else)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>आपका मैसेज</label>
+            <textarea name="regMessage" placeholder="अपनी समस्या विस्तार से लिखें..." required></textarea> </div>
+
+        <button type="submit" class="submit-btn">📩 मैसेज भेजें</button>
+        <p class="info-text">कृपया फोन न करें, हम जल्द ही मैसेज का जवाब देंगे।</p>
+    </form>
+</div>
+
+<script>
+    // 1. यहाँ अपना नया URL डालें जो 'New Deployment' से मिला हो
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzNdUwhiy32JV3oKSjE9SwasxsXUN4_hhGZ5cCBSpP1jSxXfAs0UtWuLNg9XXiORuk/exec"; 
+    const form = document.getElementById('helpForm');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const btn = e.target.querySelector('button');
+        btn.innerHTML = "भेज रहे हैं...";
+        btn.disabled = true;
+
+        const formData = new FormData(form);
+        
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors', // गूगल स्क्रिप्ट के लिए ज़रूरी
+            body: new URLSearchParams(formData)
+        })
+        .then(() => {
+            alert("धन्यवाद! आपका मैसेज 'My Indian Karigar' टीम को मिल गया है। इसका उत्तर आपको बहुत जल्द दिया जायेगा।");
+            form.reset();
+            btn.innerHTML = "📩 मैसेज भेजें";
+            btn.disabled = false;
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            alert("मैसेज नहीं गया। इंटरनेट चेक करें।");
+            btn.disabled = false;
+        });
+    });
+</script>
+</body>
+</html>
